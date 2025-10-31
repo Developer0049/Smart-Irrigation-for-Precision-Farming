@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Farmer Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-light: #4caf50;
+      --primary-dark: #1b5e20;
+      --secondary: #ffa000;
+      --secondary-light: #ffc107;
+      --secondary-dark: #ff6f00;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --info: #2196f3;
+      --dark: #333;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --border-radius: 12px;
+      --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--dark);
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      max-width: 450px;
+      width: 100%;
+      transition: var(--transition);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: var(--primary-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .logo i {
+      font-size: 40px;
+      color: white;
+    }
+
+    h1 {
+      color: var(--primary-dark);
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+    }
+
+    input {
+      padding: 15px 15px 15px 45px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      width: 100%;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+    }
+
+    button {
+      padding: 15px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      width: 100%;
+      font-size: 16px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #login-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    #login-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .divider span {
+      padding: 0 10px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .sensor-card {
+      background: var(--light);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+
+    .sensor-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .sensor-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .moisture-icon { color: #2196f3; }
+    .tank-icon { color: #00bcd4; }
+    .temp-icon { color: #f44336; }
+    .humidity-icon { color: #4caf50; }
+
+    .sensor-value {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+
+    .sensor-label {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .pump-section {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .pump-status {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .status-on {
+      background: rgba(76, 175, 80, 0.2);
+      color: var(--primary);
+    }
+
+    .status-off {
+      background: rgba(244, 67, 54, 0.2);
+      color: var(--danger);
+    }
+
+    #pump-button {
+      padding: 15px 30px;
+      font-size: 18px;
+      color: white;
+      width: auto;
+      min-width: 150px;
+    }
+
+    .pump-button.on { background: var(--primary); }
+    .pump-button.off { background: var(--danger); }
+
+    #logout-btn {
+      background: var(--gray);
+      color: white;
+      margin-top: 15px;
+    }
+
+    #logout-btn:hover {
+      background: #5a6268;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      font-size: 14px;
+      display: none;
+    }
+
+    .status-success {
+      background: rgba(76, 175, 80, 0.2);
+      color: var(--primary);
+      display: block;
+    }
+
+    .status-error {
+      background: rgba(244, 67, 54, 0.2);
+      color: var(--danger);
+      display: block;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .sensor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <i class="fas fa-seedling"></i>
+      </div>
+      <h1>Smart Farmer</h1>
+      <p class="subtitle">Monitor and control your farm remotely</p>
+    </div>
+
+    <!-- Login -->
+    <div id="login-form">
+      <div class="form-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" placeholder="Email" required>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="Password" required>
+      </div>
+      <button id="login-btn"><span class="loading" id="login-loading" style="display:none;"></span>Login</button>
+      
+      <div class="divider"><span>Or</span></div>
+      
+      <p style="text-align: center; font-size: 14px; color: var(--gray);">
+        Demo credentials: farmer@example.com / password123
+      </p>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+      <div class="sensor-grid">
+        <div class="sensor-card">
+          <div class="sensor-icon moisture-icon"><i class="fas fa-tint"></i></div>
+          <div class="sensor-value" id="moisture">-</div>
+          <div class="sensor-label">Soil Moisture</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-icon tank-icon"><i class="fas fa-water"></i></div>
+          <div class="sensor-value" id="tank-level">-</div>
+          <div class="sensor-label">Tank Level</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-icon temp-icon"><i class="fas fa-thermometer-half"></i></div>
+          <div class="sensor-value" id="temperature">-</div>
+          <div class="sensor-label">Temperature</div>
+        </div>
+        <div class="sensor-card">
+          <div class="sensor-icon humidity-icon"><i class="fas fa-cloud-rain"></i></div>
+          <div class="sensor-value" id="humidity">-</div>
+          <div class="sensor-label">Humidity</div>
+        </div>
+      </div>
+
+      <div class="pump-section">
+        <div id="pump-status" class="pump-status status-off">PUMP: OFF</div>
+        <div class="pump-control">
+          <button id="pump-button" class="pump-button off">TURN ON</button>
+        </div>
+      </div>
+      
+      <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <!-- Firebase Modular SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // ✅ Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBi2lQSVxmxiDjtBXW02TbJTYkFRaS48zo",
+      authDomain: "smart-farmer-bd192.firebaseapp.com",
+      databaseURL: "https://smart-farmer-bd192-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "smart-farmer-bd192",
+      storageBucket: "smart-farmer-bd192.appspot.com",
+      messagingSenderId: "417383395346",
+      appId: "1:417383395346:web:321c95193ffff11aab28cb",
+      measurementId: "G-55BGF55CN3"
+    };
+
+    // ✅ Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    // DOM elements
+    const loginForm = document.getElementById("login-form");
+    const dashboard = document.getElementById("dashboard");
+    const statusEl = document.getElementById("status");
+    const moistureEl = document.getElementById("moisture");
+    const tankEl = document.getElementById("tank-level");
+    const tempEl = document.getElementById("temperature");
+    const humEl = document.getElementById("humidity");
+    const pumpButton = document.getElementById("pump-button");
+    const pumpStatus = document.getElementById("pump-status");
+    const loginBtn = document.getElementById("login-btn");
+    const loginLoading = document.getElementById("login-loading");
+
+    let currentPump = "OFF";
+
+    // Login
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      
+      if (!email || !password) {
+        showStatus("Please fill all fields", "error");
+        return;
+      }
+      
+      // Show loading state
+      loginLoading.style.display = "inline-block";
+      loginBtn.disabled = true;
+      
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          showStatus("Login successful!", "success");
+        })
+        .catch((err) => {
+          showStatus("Login failed: " + err.message, "error");
+        })
+        .finally(() => {
+          loginLoading.style.display = "none";
+          loginBtn.disabled = false;
+        });
+    });
+
+    // Logout
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      signOut(auth).then(() => {
+        showStatus("Logged out successfully", "success");
+      });
+    });
+
+    // Auth state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginForm.style.display = "none";
+        dashboard.style.display = "block";
+        setupRealtimeListeners();
+      } else {
+        loginForm.style.display = "block";
+        dashboard.style.display = "none";
+      }
+    });
+
+    // Setup realtime DB listeners
+    function setupRealtimeListeners() {
+      onValue(ref(db, "sensors/moisture1"), (snap) => {
+        moistureEl.textContent = snap.exists() ? snap.val() : "N/A";
+      });
+      onValue(ref(db, "sensors/tank_level"), (snap) => {
+        tankEl.textContent = snap.exists() ? snap.val() : "N/A";
+      });
+      onValue(ref(db, "sensors/temperature"), (snap) => {
+        tempEl.textContent = snap.exists() ? snap.val() : "N/A";
+      });
+      onValue(ref(db, "sensors/humidity"), (snap) => {
+        humEl.textContent = snap.exists() ? snap.val() : "N/A";
+      });
+      onValue(ref(db, "control/pump"), (snap) => {
+        currentPump = snap.exists() ? snap.val() : "OFF";
+        updatePumpButton();
+      });
+    }
+
+    // Toggle pump
+    pumpButton.addEventListener("click", () => {
+      currentPump = currentPump === "ON" ? "OFF" : "ON";
+      set(ref(db, "control/pump"), currentPump)
+        .then(() => {
+          showStatus("Pump set to " + currentPump, "success");
+        })
+        .catch((err) => {
+          showStatus("Error updating pump: " + err.message, "error");
+        });
+    });
+
+    function updatePumpButton() {
+      if (currentPump === "ON") {
+        pumpButton.textContent = "TURN OFF";
+        pumpButton.classList.add("on");
+        pumpButton.classList.remove("off");
+        pumpStatus.textContent = "PUMP: ON";
+        pumpStatus.classList.remove("status-off");
+        pumpStatus.classList.add("status-on");
+      } else {
+        pumpButton.textContent = "TURN ON";
+        pumpButton.classList.add("off");
+        pumpButton.classList.remove("on");
+        pumpStatus.textContent = "PUMP: OFF";
+        pumpStatus.classList.remove("status-on");
+        pumpStatus.classList.add("status-off");
+      }
+    }
+
+    function showStatus(message, type) {
+      statusEl.textContent = message;
+      statusEl.className = type === "success" ? "status-success" : "status-error";
+      
+      // Auto hide after 3 seconds
+      setTimeout(() => {
+        statusEl.style.display = "none";
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
